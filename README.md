@@ -1,2 +1,2 @@
 # perceptron_bp
-Neural network with back-propagation algorithm on java
+Neural network with back-propagation algorithm in Java
