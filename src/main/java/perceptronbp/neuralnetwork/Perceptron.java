@@ -3,6 +3,7 @@ package perceptronbp.neuralnetwork;
 import perceptronbp.matrix.SimpleMatrixSolver;
 import perceptronbp.neuralnetwork.activationfunctions.ActivationFunction;
 import perceptronbp.neuralnetwork.activationfunctions.SigmoidActivationFunction;
+import perceptronbp.neuralnetwork.activationfunctions.TangensoidActivationFunction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +50,7 @@ public class Perceptron {
     public static class Builder {
 
         private final double DEFAULT_LAMBDA = 1.0d;
-        private ActivationFunction DEFAULT_ACTIVATION_FUNCTION = new SigmoidActivationFunction(DEFAULT_LAMBDA);
+        private ActivationFunction DEFAULT_ACTIVATION_FUNCTION = new TangensoidActivationFunction(DEFAULT_LAMBDA);
         private double DEFAULT_LEARNING_COEFFICIENT = 0.1d;
 
         private int[] layers;
@@ -150,7 +151,9 @@ public class Perceptron {
                 calcNewWeights(inputVector);
                
             }
-           
+
+            // shuffle trainData and dOutputs here
+
            System.out.println("epoch: " + epoch + ", MSE: " + meanSquaredError);
                      
         }
@@ -193,7 +196,7 @@ public class Perceptron {
           
             
             for (int i = 0; i < outputs.length; ++ i ) {
-                meanSquaredError += Math.pow((dOutputs[i] - outputs[i]), 2);
+                meanSquaredError += (Math.pow((dOutputs[i] - outputs[i]), 2)) / outputs.length;
             }
             //_mse /= outputs.length;
     }

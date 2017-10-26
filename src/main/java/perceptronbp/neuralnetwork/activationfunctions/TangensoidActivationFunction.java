@@ -1,18 +1,19 @@
 package perceptronbp.neuralnetwork.activationfunctions;
 
-public class SigmoidActivationFunction implements ActivationFunction {
+public class TangensoidActivationFunction implements ActivationFunction {
 
     private double lambda;
 
-    public SigmoidActivationFunction(double lambda) {
+    public TangensoidActivationFunction(double lambda) {
         if (lambda <= 0) {
             throw new IllegalArgumentException("Lambda must be > 0");
         }
         this.lambda = lambda;
     }
+
     /**
-     * Sigmoid Activation Function:
-     *  1 / (1+e^(-lambda*n))
+     * Tangensoid Activation Function:
+     *  2 / (1+e^(-lambda*n)) - 1
      */
     @Override
     public double[] activate(double [] inputs) {
@@ -20,7 +21,7 @@ public class SigmoidActivationFunction implements ActivationFunction {
         double result;
 
         for (int i = 0; i < inputs.length; ++i ){
-            result = 1 / (1 + Math.exp(-lambda * inputs[i]));
+            result = (2 / (1 + Math.exp(-lambda * inputs[i]))) - 1;
             outputs[i] = result;
         }
 
@@ -29,6 +30,6 @@ public class SigmoidActivationFunction implements ActivationFunction {
 
     @Override
     public double getDerivative(double input) {
-        return input * (1 - input);
+        return 1 - Math.pow(input, 2);
     }
 }

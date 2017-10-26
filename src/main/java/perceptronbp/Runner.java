@@ -3,6 +3,7 @@ package perceptronbp;
 import perceptronbp.input.ImageInputExtractor;
 import perceptronbp.neuralnetwork.Perceptron;
 import perceptronbp.neuralnetwork.activationfunctions.SigmoidActivationFunction;
+import perceptronbp.neuralnetwork.activationfunctions.TangensoidActivationFunction;
 
 import java.util.ArrayList;
 
@@ -15,12 +16,12 @@ public class Runner {
 
         int n_inputs = 24; // number of pixels
         int[] layers = {10, 5}; // 10 neurons in 5 layers
+        double lambda = 1.0d;
 
 //        Perceptron perceptron = new Perceptron(n_inputs, layers);
         Perceptron perceptron = new Perceptron.Builder(n_inputs, layers)
-                .withActivationFunction(new SigmoidActivationFunction())
-                .withLambda(1d)
-                .withLearningCoefficient(0.1d)
+                .withActivationFunction(new TangensoidActivationFunction(lambda))
+                .withLearningCoefficient(0.001d)
                 .build();
 
         // prepare trainData
@@ -68,7 +69,7 @@ public class Runner {
         trainData.add(inputExtractor.get("img/e4.bmp")); dOutputs.add(new double[]{0, 0, 0, 0, 1});
 
         //let's learn
-        int maxEpochs = 1000;
+        int maxEpochs = 1000000;
         perceptron.learn(trainData, dOutputs, maxEpochs);
 
 
