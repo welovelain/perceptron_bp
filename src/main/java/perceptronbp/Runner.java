@@ -2,6 +2,7 @@ package perceptronbp;
 
 import perceptronbp.input.ImageInputExtractor;
 import perceptronbp.neuralnetwork.Perceptron;
+import perceptronbp.neuralnetwork.activationfunctions.SigmoidActivationFunction;
 
 import java.util.ArrayList;
 
@@ -12,10 +13,15 @@ public class Runner {
 
     public static void main(String[] args) throws Exception {
 
-        int n_inputs = 24;
-        int[] layers = {10, 5};
-        Perceptron perceptron = new Perceptron(n_inputs, layers);
+        int n_inputs = 24; // number of pixels
+        int[] layers = {10, 5}; // 10 neurons in 5 layers
 
+//        Perceptron perceptron = new Perceptron(n_inputs, layers);
+        Perceptron perceptron = new Perceptron.Builder(n_inputs, layers)
+                .withActivationFunction(new SigmoidActivationFunction())
+                .withLambda(1d)
+                .withLearningCoefficient(0.1d)
+                .build();
 
         // prepare trainData
         ArrayList<double[]> trainData = new ArrayList<>();

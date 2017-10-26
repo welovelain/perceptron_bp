@@ -1,6 +1,8 @@
 package perceptronbp.neuralnetwork;
 
 import perceptronbp.matrix.SimpleMatrixSolver;
+import perceptronbp.neuralnetwork.activationfunctions.ActivationFunction;
+import perceptronbp.neuralnetwork.activationfunctions.SigmoidActivationFunction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,25 +10,30 @@ import java.util.Arrays;
 public class Perceptron {
 
     // these are global weights. e.g. _weights.get(0) - get weight matrix for the 1st layer.
-    ArrayList<double[][]> globalWeights = new ArrayList<>();
+    private ArrayList<double[][]> globalWeights = new ArrayList<>();
 
     // this is accumulating all outputs of neural network. Updated every epoch.
-    ArrayList<double[]> globalOutputs = new ArrayList<>();
+    private ArrayList<double[]> globalOutputs = new ArrayList<>();
 
     // this is accumulating errors of each neuron. Updated every epoch
-    ArrayList<double[]> globalErrors = new ArrayList<>();
+    private ArrayList<double[]> globalErrors = new ArrayList<>();
 
     // amount of layers and amount of neurons in each layer
     private int[] layers;
 
     private double meanSquaredError;
 
-    final static double learningCoefficient = 0.1;
-    final static double lambda = 1;
-    
-    public Perceptron(int n_inputs, int[] layers) {
-        this.layers = layers;
-        
+    private double learningCoefficient;
+    private double lambda;
+
+    private ActivationFunction activationFunction;
+
+    private Perceptron(Builder builder) {
+        this.layers = builder.layers;
+        this.activationFunction = builder.activationFunction;
+        this.learningCoefficient = builder.learningCoefficient;
+        this.lambda = builder.lambda;
+
         // allocate all
         double[] e = {};
         double[][] ee = {{}};
@@ -36,26 +43,61 @@ public class Perceptron {
             globalErrors.add(e);
         }
         System.out.println ("Space for global weights, errors and outputs allocated");
-        
-        initWeights(n_inputs);
+
+        initWeights(builder.n_inputs);
         System.out.println ("Weights initialized");
     }
-    
-    
-    
-    // 1 / (1+e^(-lambda*x))
-    private double[] sigmoidActivate (double [] inputs){
-        
-        double[] outputs = new double[inputs.length];
-        double result; 
-        
-        for (int i = 0; i < inputs.length; ++i ){
-            result = 1 / (1 + Math.exp(-1 * lambda * inputs[i]));
-            outputs[i] = result;
+
+    public static class Builder {
+        private int[] layers;
+        private int n_inputs;
+        double learningCoefficient = 0.1;
+        double lambda = 1;
+        private ActivationFunction activationFunction = new SigmoidActivationFunction();
+
+        public Builder(int n_inputs, int[] layers) {
+            if (layers.length <= 0) {
+                throw new IllegalArgumentException("Layers shouldn't be 0 length");
+            }
+            if (n_inputs <= 0) {
+                throw new IllegalArgumentException("Number of inputs should be > 0 length.");
+            }
+            this.layers = layers;
+            this.n_inputs = n_inputs;
         }
-        
-        return outputs;
+
+        public Builder withLearningCoefficient(double learningCoefficient) {
+
+            if (learningCoefficient <= 0) {
+                throw new IllegalArgumentException("Learning coefficient should be > 0");
+            }
+            this.learningCoefficient = learningCoefficient;
+            return this;
+        }
+
+        public Builder withLambda(double lambda) {
+
+            if (lambda <= 0) {
+                throw new IllegalArgumentException("Lambda should be > 0");
+            }
+            this.lambda = lambda;
+            return this;
+        }
+
+        public Builder withActivationFunction(ActivationFunction activationFunction) {
+            if (activationFunction == null) {
+                throw new IllegalArgumentException("Activation function can't be null");
+            }
+            this.activationFunction = activationFunction;
+            return this;
+        }
+
+        public Perceptron build() {
+            return new Perceptron(this);
+        }
+
     }
+
     
     //Add 1 to inputs at the end
     private double[] addBias(double [] inputs){
@@ -135,8 +177,9 @@ public class Perceptron {
             double[][] w = globalWeights.get(l);
                         
             outputs = SimpleMatrixSolver.multiply(w, inputs);
+
             // pass it through activation function
-            outputs = sigmoidActivate(outputs);
+            outputs = activationFunction.activate(outputs, lambda);
             
             // add all outputs to _outputs (global outputs store)
             globalOutputs.set(l, outputs);
@@ -179,7 +222,7 @@ public class Perceptron {
                      
                     double y = outputsVector[i];
                     double d = dOutputVector[i];
-                    error = getSigmoidDerivative(y) * (d - y); // y * (1-y) * (d-y)
+                    error = activationFunction.getDerivative(y) * (d - y); // y * (1-y) * (d-y)
                      
                 } else {
                     
@@ -193,7 +236,7 @@ public class Perceptron {
                         
                     }
                     
-                    error = getSigmoidDerivative(outputsVector[i]) * sum;
+                    error = activationFunction.getDerivative(outputsVector[i]) * sum;
                     
                 }
                
@@ -244,13 +287,7 @@ public class Perceptron {
         } //layer
         
     }
-    
-    
-    private double getSigmoidDerivative (double input) {
-        return input * (1 - input);
-    }
-    
-    
+
     
     public void test(ArrayList<double[]> testTrainData, ArrayList<double[]> testDOutputs) { 
     
@@ -320,31 +357,31 @@ public class Perceptron {
         
     }
     
-    public static ArrayList<double[]> createTrainDataXOR() {
-          
-          ArrayList<double[]> trainData = new ArrayList<>();
-          
-          trainData.add(new double[]{0,0});
-          trainData.add(new double[]{0,1});
-          trainData.add(new double[]{1,0});
-          trainData.add(new double[]{1,1});
-        
-          return trainData;
-    }
-    
-    
-    public static ArrayList<double[]> createDesiredOutputDataXOR() {
-          
-          ArrayList<double[]> dOutputs = new ArrayList<>();
-           
-          
-            dOutputs.add(new double[]{0});
-            dOutputs.add(new double[]{1});
-            dOutputs.add(new double[]{1});
-            dOutputs.add(new double[]{0});
-        
-          return dOutputs;
-    }
+//    public static ArrayList<double[]> createTrainDataXOR() {
+//
+//          ArrayList<double[]> trainData = new ArrayList<>();
+//
+//          trainData.add(new double[]{0,0});
+//          trainData.add(new double[]{0,1});
+//          trainData.add(new double[]{1,0});
+//          trainData.add(new double[]{1,1});
+//
+//          return trainData;
+//    }
+//
+//
+//    public static ArrayList<double[]> createDesiredOutputDataXOR() {
+//
+//          ArrayList<double[]> dOutputs = new ArrayList<>();
+//
+//
+//            dOutputs.add(new double[]{0});
+//            dOutputs.add(new double[]{1});
+//            dOutputs.add(new double[]{1});
+//            dOutputs.add(new double[]{0});
+//
+//          return dOutputs;
+//    }
     
     
 
