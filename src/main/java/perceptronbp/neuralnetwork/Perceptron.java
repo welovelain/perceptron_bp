@@ -1,21 +1,39 @@
-package perceptronbp;
+package perceptronbp.neuralnetwork;
+
+import perceptronbp.matrix.SimpleMatrixSolver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class PerceptronBP {
+public class Perceptron {
+
+    // these are global weights. e.g. _weights.get(0) - get weight matrix for the 1st layer.
+    ArrayList<double[][]> globalWeights = new ArrayList<>();
+
+    // this is accumulating all outputs of neural network. Updated every epoch.
+    ArrayList<double[]> globalOutputs = new ArrayList<>();
+
+    // this is accumulating errors of each neuron. Updated every epoch
+    ArrayList<double[]> globalErrors = new ArrayList<>();
+
+    // amount of layers and amount of neurons in each layer
+    private int[] layers;
+
+    private double meanSquaredError;
+
+    final static double learningCoefficient = 0.1;
+    final static double lambda = 1;
     
-    // main constructor
-    public PerceptronBP (int n_inputs, int[] layers) {
-        _layers = layers;
+    public Perceptron(int n_inputs, int[] layers) {
+        this.layers = layers;
         
         // allocate all
         double[] e = {};
         double[][] ee = {{}};
-        for (int i = 0; i < _layers.length; ++i){
-            _outputs.add(e);
-            _weights.add(ee);
-            _errors.add(e);
+        for (int i = 0; i < this.layers.length; ++i){
+            globalOutputs.add(e);
+            globalWeights.add(ee);
+            globalErrors.add(e);
         }
         System.out.println ("Space for global weights, errors and outputs allocated");
         
@@ -32,7 +50,7 @@ public class PerceptronBP {
         double result; 
         
         for (int i = 0; i < inputs.length; ++i ){
-            result = 1 / (1 + Math.exp(-1 * _lambda * inputs[i]));
+            result = 1 / (1 + Math.exp(-1 * lambda * inputs[i]));
             outputs[i] = result;
         }
         
@@ -55,21 +73,21 @@ public class PerceptronBP {
         int n_prev_neurons; 
         int n_neurons;
         
-        for (int i = 0; i < _layers.length; ++i){
+        for (int i = 0; i < layers.length; ++i){
             
-            n_prev_neurons = (i == 0) ?  n_inputs + 1 : _layers[i-1] + 1; // +1 is for bias
-            n_neurons = _layers[i];
+            n_prev_neurons = (i == 0) ?  n_inputs + 1 : layers[i-1] + 1; // +1 is for bias
+            n_neurons = layers[i];
             
             // Random weight matrix for layer(i) with weights from -0.5 to 0.5
-            double[][] weightMatrix = Matrix.random(n_neurons, n_prev_neurons);
+            double[][] weightMatrix = SimpleMatrixSolver.random(n_neurons, n_prev_neurons);
                        
             // Adding weightMatrix to weights field
-            _weights.set(i, weightMatrix);
+            globalWeights.set(i, weightMatrix);
             
         }        
     }
     
-    private void learn(ArrayList<double[]> trainData, ArrayList<double[]> dOutputs, int maxEpochs) {
+    public void learn(ArrayList<double[]> trainData, ArrayList<double[]> dOutputs, int maxEpochs) {
         
         double [] inputVector;
         double [] dOutputVector;
@@ -77,11 +95,11 @@ public class PerceptronBP {
         for (int epoch = 0; epoch < maxEpochs; ++epoch) {
             
             // set all necessary vars to 0
-            _mse = 0;
+            meanSquaredError = 0;
             //_weightDeltas = 0 & _errors = empty
             double[] e = {};
-            for (int i = 0; i < _layers.length; ++i){
-                _errors.add(e);
+            for (int i = 0; i < layers.length; ++i){
+                globalErrors.add(e);
             }
                           
             // we go input by input
@@ -97,7 +115,7 @@ public class PerceptronBP {
                
             }
            
-           System.out.println("epoch: " + epoch + ", MSE: " + _mse);
+           System.out.println("epoch: " + epoch + ", MSE: " + meanSquaredError);
                      
         }
         
@@ -109,19 +127,19 @@ public class PerceptronBP {
         
         double [] outputs;
         
-        for (int l = 0; l < _layers.length; ++l){
+        for (int l = 0; l < layers.length; ++l){
             
             inputs = addBias(inputs);
             
             // count Net matrix
-            double[][] w = _weights.get(l);
+            double[][] w = globalWeights.get(l);
                         
-            outputs = Matrix.multiply(w, inputs);            
+            outputs = SimpleMatrixSolver.multiply(w, inputs);
             // pass it through activation function
             outputs = sigmoidActivate(outputs);
             
             // add all outputs to _outputs (global outputs store)
-            _outputs.set(l, outputs);
+            globalOutputs.set(l, outputs);
            
             inputs = outputs;            
         }
@@ -132,14 +150,14 @@ public class PerceptronBP {
     private void calcMSE (double[] dOutputs) {
         
            
-            double[] outputs = _outputs.get(_layers.length - 1);  
+            double[] outputs = globalOutputs.get(layers.length - 1);
             
             
           
             
-            for (int i = 0; i < outputs.length; ++ i ) 
-                _mse += Math.pow((dOutputs[i] -  outputs[i]), 2);
-                     
+            for (int i = 0; i < outputs.length; ++ i ) {
+                meanSquaredError += Math.pow((dOutputs[i] - outputs[i]), 2);
+            }
             //_mse /= outputs.length;
     }
     
@@ -147,13 +165,13 @@ public class PerceptronBP {
     private void calcNeuronErrors(double[] dOutputVector) {
         
         double error;
-        int n_layers= _layers.length ;
+        int n_layers= layers.length ;
                 
         // back-propagating
         for (int layer = n_layers - 1; layer >= 0; --layer) {
             
-            double[] errorsVector = new double[_outputs.get(layer).length];
-            double[] outputsVector = _outputs.get(layer);
+            double[] errorsVector = new double[globalOutputs.get(layer).length];
+            double[] outputsVector = globalOutputs.get(layer);
 
             for (int i = 0; i < outputsVector.length; ++i ) {
                 
@@ -166,11 +184,11 @@ public class PerceptronBP {
                 } else {
                     
                     double sum = 0;    
-                    double[] nextLayerErrorsVector = _errors.get(layer + 1); // vector of errors of next layer
+                    double[] nextLayerErrorsVector = globalErrors.get(layer + 1); // vector of errors of next layer
                     
                     for (int j = 0; j < nextLayerErrorsVector.length; ++j ){
                         
-                        double connectedW = _weights.get(layer + 1)[j][i];
+                        double connectedW = globalWeights.get(layer + 1)[j][i];
                         sum += nextLayerErrorsVector[j] * connectedW;
                         
                     }
@@ -181,9 +199,9 @@ public class PerceptronBP {
                
                 errorsVector[i] = error;
             }
-            
-            
-            _errors.set(layer, errorsVector);
+
+
+            globalErrors.set(layer, errorsVector);
            
         }
         
@@ -192,27 +210,27 @@ public class PerceptronBP {
      // deltaW = q*d*z
     private void calcNewWeights(double[] inputVector) {
         
-        double q = _learningCoefficient;
+        double q = learningCoefficient;
         double[] errorsVector;
         double[] neuronWeightDeltaVector;
        
         
         
-        for (int layer = 0; layer < _layers.length; ++layer ) {
+        for (int layer = 0; layer < layers.length; ++layer ) {
             
-           errorsVector = _errors.get(layer);
-           double[][] newWeightDelta = _weights.get(layer);
+           errorsVector = globalErrors.get(layer);
+           double[][] newWeightDelta = globalWeights.get(layer);
             
            for (int i = 0; i < errorsVector.length; ++i ) {
                
-               double d = _errors.get(layer)[i];               
+               double d = globalErrors.get(layer)[i];
                double deltaW = q * d;
                
                if (layer  == 0 ) 
-                   neuronWeightDeltaVector = Matrix.multiply(inputVector, deltaW);
+                   neuronWeightDeltaVector = SimpleMatrixSolver.multiply(inputVector, deltaW);
                else {
-                   inputVector = _outputs.get(layer - 1);
-                   neuronWeightDeltaVector = Matrix.multiply(inputVector, deltaW);
+                   inputVector = globalOutputs.get(layer - 1);
+                   neuronWeightDeltaVector = SimpleMatrixSolver.multiply(inputVector, deltaW);
                }
                               
                for (int j = 0; j < neuronWeightDeltaVector.length; ++j){
@@ -220,8 +238,8 @@ public class PerceptronBP {
                }
                
            } // neuron
-           
-           _weights.set(layer, newWeightDelta);
+
+            globalWeights.set(layer, newWeightDelta);
             
         } //layer
         
@@ -246,7 +264,7 @@ public class PerceptronBP {
                 
                 calcOutputs(inputVector);      
                
-                double[] outputVector = _outputs.get(_layers.length - 1);
+                double[] outputVector = globalOutputs.get(layers.length - 1);
                 
                 printInputLetter(inputVector);
                 
@@ -329,105 +347,10 @@ public class PerceptronBP {
     }
     
     
-    public static void main(String[] args) {
-        
-        
-        /* 
-        // implementing XOR function
-        //2 inputs, 2 hidden layers, 1 output layer. Can store any number of hidden layers
-        int n_inputs = 2; 
-        int[] layers = {5, 1};  
-        PerceptronBP perceptron = new PerceptronBP(n_inputs, layers);
-        
-        // preparing data                  
-        ArrayList<double[]> trainData = createTrainDataXOR();
-        ArrayList<double[]> dOutputs = createDesiredOutputDataXOR();
-        
-        //let's learn
-        int maxEpochs = 5000;
-        perceptron.learn(trainData, dOutputs, maxEpochs);
-        perceptron.test(trainData, dOutputs);
-        */
-        
-        // prepare trainData
-        ArrayList<double[]> trainData = new ArrayList<>();
-        ArrayList<double[]> dOutputs = new ArrayList<>();
-        
-      
-        //neurons: {A, B, C, D, E}. e.g. desired output for neuron B is {0, 1, 0, 0, 0}
-        {
-            trainData.add(GetImageInputs.get("img/a1.bmp")); dOutputs.add(new double[]{1, 0, 0, 0, 0});
-            trainData.add(GetImageInputs.get("img/a2.bmp")); dOutputs.add(new double[]{1, 0, 0, 0, 0});
-            trainData.add(GetImageInputs.get("img/a3.bmp")); dOutputs.add(new double[]{1, 0, 0, 0, 0});
-            trainData.add(GetImageInputs.get("img/a4.bmp")); dOutputs.add(new double[]{1, 0, 0, 0, 0});
-            trainData.add(GetImageInputs.get("img/a5.bmp")); dOutputs.add(new double[]{1, 0, 0, 0, 0});
-            
-            trainData.add(GetImageInputs.get("img/b1.bmp")); dOutputs.add(new double[]{0, 1, 0, 0, 0});
-            trainData.add(GetImageInputs.get("img/b2.bmp")); dOutputs.add(new double[]{0, 1, 0, 0, 0});
-            trainData.add(GetImageInputs.get("img/b3.bmp")); dOutputs.add(new double[]{0, 1, 0, 0, 0});
-            trainData.add(GetImageInputs.get("img/b4.bmp")); dOutputs.add(new double[]{0, 1, 0, 0, 0});
-            
-            trainData.add(GetImageInputs.get("img/c1.bmp")); dOutputs.add(new double[]{0, 0, 1, 0, 0});
-            trainData.add(GetImageInputs.get("img/c2.bmp")); dOutputs.add(new double[]{0, 0, 1, 0, 0});
-            trainData.add(GetImageInputs.get("img/c3.bmp")); dOutputs.add(new double[]{0, 0, 1, 0, 0});
-            trainData.add(GetImageInputs.get("img/c4.bmp")); dOutputs.add(new double[]{0, 0, 1, 0, 0});
-            
-            trainData.add(GetImageInputs.get("img/d1.bmp")); dOutputs.add(new double[]{0, 0, 0, 1, 0});
-            trainData.add(GetImageInputs.get("img/d2.bmp")); dOutputs.add(new double[]{0, 0, 0, 1, 0});
-            trainData.add(GetImageInputs.get("img/d3.bmp")); dOutputs.add(new double[]{0, 0, 0, 1, 0});
-            trainData.add(GetImageInputs.get("img/d4.bmp")); dOutputs.add(new double[]{0, 0, 0, 1, 0});
-            
-            trainData.add(GetImageInputs.get("img/e1.bmp")); dOutputs.add(new double[]{0, 0, 0, 0, 1});
-            trainData.add(GetImageInputs.get("img/e2.bmp")); dOutputs.add(new double[]{0, 0, 0, 0, 1});
-            trainData.add(GetImageInputs.get("img/e3.bmp")); dOutputs.add(new double[]{0, 0, 0, 0, 1});
-            trainData.add(GetImageInputs.get("img/e4.bmp")); dOutputs.add(new double[]{0, 0, 0, 0, 1});
-        }
-        
-        
-        int n_inputs = 24; 
-        int[] layers = {10, 5};  
-        PerceptronBP perceptron = new PerceptronBP(n_inputs, layers);
-        
-        //let's learn
-        int maxEpochs = 10000;
-        perceptron.learn(trainData, dOutputs, maxEpochs);
-        
-        
-        System.out.println("NOW TESTING!");
-        ArrayList<double[]> testTrainData = new ArrayList<>();
-        ArrayList<double[]> testDOutputs = new ArrayList<>();
-        
-        // test data
-         {
-            testTrainData.add(GetImageInputs.get("img/a6.bmp")); testDOutputs.add(new double[]{1, 0, 0, 0, 0});   
-            testTrainData.add(GetImageInputs.get("img/b5.bmp")); testDOutputs.add(new double[]{0, 1, 0, 0, 0});            
-            testTrainData.add(GetImageInputs.get("img/c5.bmp")); testDOutputs.add(new double[]{0, 0, 1, 0, 0});            
-            testTrainData.add(GetImageInputs.get("img/d5.bmp")); testDOutputs.add(new double[]{0, 0, 0, 1, 0});            
-            testTrainData.add(GetImageInputs.get("img/e5.bmp")); testDOutputs.add(new double[]{0, 0, 0, 0, 1});
-        }
-        perceptron.test(testTrainData, testDOutputs);
-    }
-    
-    
-    
-    //--------FIELDS-------
-    
-    // these are global weights. e.g. _weights.get(0) - get weight matrix for the 1st layer.
-    ArrayList<double[][]> _weights = new ArrayList<>();     
-    
-    
-    // this is accumulating all outputs of neural network. Updated every epoch.
-    ArrayList<double[]> _outputs = new ArrayList<>();
-    
-    // this is accumulating errors of each neuron. Updated every epoch
-    ArrayList<double[]> _errors = new ArrayList<>();
-    
-    // amount of layers and amount of neurons in each layer
-    private int[] _layers;
-    
-    private double _mse;
-    
-    final static double _learningCoefficient = 0.1;
-    final static double _lambda = 1;
-    
+
+
+
+
+
+
 }

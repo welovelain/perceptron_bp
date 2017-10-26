@@ -1,8 +1,8 @@
-package perceptronbp;
+package perceptronbp.matrix;
 
 import java.util.Random;
 
-public class Matrix {
+public class SimpleMatrixSolver {
 
     // return a random m-by-n matrix with values between -0.5 and 0.5
     public static double[][] random(int m, int n) {
