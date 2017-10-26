@@ -2,12 +2,17 @@ package perceptronbp.neuralnetwork.activationfunctions;
 
 public class SigmoidActivationFunction implements ActivationFunction {
 
+    double lambda;
+
+    public SigmoidActivationFunction(double lambda) {
+        this.lambda = lambda;
+    }
     /**
      * Sigmoid Activation Function:
      *  1 / (1+e^(-lambda*x))
      */
     @Override
-    public double[] activate(double [] inputs, double lambda) {
+    public double[] activate(double [] inputs) {
         double[] outputs = new double[inputs.length];
         double result;
 

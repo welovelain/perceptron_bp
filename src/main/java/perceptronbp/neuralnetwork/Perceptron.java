@@ -24,7 +24,6 @@ public class Perceptron {
     private double meanSquaredError;
 
     private double learningCoefficient;
-    private double lambda;
 
     private ActivationFunction activationFunction;
 
@@ -32,7 +31,6 @@ public class Perceptron {
         this.layers = builder.layers;
         this.activationFunction = builder.activationFunction;
         this.learningCoefficient = builder.learningCoefficient;
-        this.lambda = builder.lambda;
 
         // allocate all
         double[] e = {};
@@ -49,11 +47,16 @@ public class Perceptron {
     }
 
     public static class Builder {
+
+        private final double DEFAULT_LAMBDA = 1.0d;
+        private ActivationFunction DEFAULT_ACTIVATION_FUNCTION = new SigmoidActivationFunction(DEFAULT_LAMBDA);
+        private double DEFAULT_LEARNING_COEFFICIENT = 0.1d;
+
         private int[] layers;
         private int n_inputs;
-        double learningCoefficient = 0.1;
-        double lambda = 1;
-        private ActivationFunction activationFunction = new SigmoidActivationFunction();
+
+        double learningCoefficient = DEFAULT_LEARNING_COEFFICIENT;
+        private ActivationFunction activationFunction = DEFAULT_ACTIVATION_FUNCTION;
 
         public Builder(int n_inputs, int[] layers) {
             if (layers.length <= 0) {
@@ -72,15 +75,6 @@ public class Perceptron {
                 throw new IllegalArgumentException("Learning coefficient should be > 0");
             }
             this.learningCoefficient = learningCoefficient;
-            return this;
-        }
-
-        public Builder withLambda(double lambda) {
-
-            if (lambda <= 0) {
-                throw new IllegalArgumentException("Lambda should be > 0");
-            }
-            this.lambda = lambda;
             return this;
         }
 
@@ -179,7 +173,7 @@ public class Perceptron {
             outputs = SimpleMatrixSolver.multiply(w, inputs);
 
             // pass it through activation function
-            outputs = activationFunction.activate(outputs, lambda);
+            outputs = activationFunction.activate(outputs);
             
             // add all outputs to _outputs (global outputs store)
             globalOutputs.set(l, outputs);
