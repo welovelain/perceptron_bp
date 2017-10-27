@@ -21,7 +21,7 @@ public class Runner {
 //        Perceptron perceptron = new Perceptron(n_inputs, layers);
         Perceptron perceptron = new Perceptron.Builder(n_inputs, layers)
                 .withActivationFunction(new TangensoidActivationFunction(lambda))
-                .withLearningCoefficient(0.001d)
+                .withLearningCoefficient(0.01d)
                 .build();
 
         // prepare trainData
@@ -69,7 +69,7 @@ public class Runner {
         trainData.add(inputExtractor.get("img/e4.bmp")); dOutputs.add(new double[]{0, 0, 0, 0, 1});
 
         //let's learn
-        int maxEpochs = 1000000;
+        int maxEpochs = 30000;
         perceptron.learn(trainData, dOutputs, maxEpochs);
 
 

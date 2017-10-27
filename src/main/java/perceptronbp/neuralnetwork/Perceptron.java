@@ -188,17 +188,11 @@ public class Perceptron {
     
     // MSE = 1/n * SUM [(d_o - y_o)^2]
     private void calcMSE (double[] dOutputs) {
-        
-           
-            double[] outputs = globalOutputs.get(layers.length - 1);
-            
-            
-          
-            
-            for (int i = 0; i < outputs.length; ++ i ) {
-                meanSquaredError += (Math.pow((dOutputs[i] - outputs[i]), 2)) / outputs.length;
-            }
-            //_mse /= outputs.length;
+        double[] outputs = globalOutputs.get(layers.length - 1);
+        for (int i = 0; i < outputs.length; ++ i ) {
+            meanSquaredError += (Math.pow((dOutputs[i] - outputs[i]), 2));
+        }
+        meanSquaredError /= outputs.length;
     }
     
     // calculate Errors of each neuron
