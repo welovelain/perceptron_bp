@@ -20,7 +20,6 @@ public class Perceptron {
     }
 
     public static class Builder {
-
         private float DEFAULT_LEARNING_COEFFICIENT = 0.1f;
         private List<Layer> layerList;
         private float learningCoefficient = DEFAULT_LEARNING_COEFFICIENT;
@@ -91,7 +90,7 @@ public class Perceptron {
     }
 
     // calculate Errors of each neuron. Back-propagating from last layer to the first
-    public void calcNeuronErrors(float[] desiredOutputVector) {
+    private void calcNeuronErrors(float[] desiredOutputVector) {
         ListIterator<Layer> li = layerList.listIterator(layerList.size());
         Layer lastLayer = li.previous();
         lastLayer.calculateError(desiredOutputVector);
@@ -103,7 +102,7 @@ public class Perceptron {
         }
     }
 
-     // deltaW = lCoef * d * z
+    // deltaW = lCoef * d * z
     private void calcNewWeights(float[] inputVector) {
         float[] errorVector;
 
@@ -128,7 +127,7 @@ public class Perceptron {
         }
     }
 
-    /* Static methods */
+     /* Static methods */
 
     //Add 1 to inputs at the end
     public static float[] addBias(float[] inputs){

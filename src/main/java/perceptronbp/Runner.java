@@ -24,6 +24,8 @@ public class Runner {
     }
 
     public static void runLetterRecognizeSuite() throws IOException {
+        long startTimer = System.nanoTime();
+
         float lambda = 1f;
 
         List<Layer> layers = new LayerFactory(24)
@@ -58,6 +60,9 @@ public class Runner {
         testLetter(perceptron, inputExtractor.get("img/c5.bmp"), new float[]{0, 0, 1, 0, 0});
         testLetter(perceptron, inputExtractor.get("img/d5.bmp"), new float[]{0, 0, 0, 1, 0});
         testLetter(perceptron, inputExtractor.get("img/e5.bmp"), new float[]{0, 0, 0, 0, 1});
+
+        float passed = ((float)(System.nanoTime() - startTimer)/1000000000);
+        System.out.println("Time passed: " + passed);
     }
 
     public static void testLetter(Perceptron perceptron, float[] input, float[] desiredOutput) {

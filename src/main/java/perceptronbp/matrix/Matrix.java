@@ -2,6 +2,7 @@ package perceptronbp.matrix;
 
 import java.util.Random;
 
+// TODO -> find way of faster matrix multiplication
 public class Matrix {
 
     // return a random m-by-n matrix with values between -0.5 and 0.5
@@ -102,7 +103,6 @@ public class Matrix {
                 y[i] += A[i][j] * x[j];
         return y;
     }
-
 
     // vector-matrix multiplication (y = x^T A)
     public static float[] multiply(float[] x, float[][] A) {
