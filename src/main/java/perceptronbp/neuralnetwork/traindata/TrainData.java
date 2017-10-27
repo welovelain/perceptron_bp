@@ -6,16 +6,13 @@ import java.util.List;
 
 public class TrainData {
     private List<InputAndDesiredOutput> inputAndDesiredOutputList;
-    private int size;
 
     public TrainData() {
         inputAndDesiredOutputList = new ArrayList<>(0);
-        size = 0;
     }
 
     public TrainData(List<InputAndDesiredOutput> inputAndDesiredOutputList) {
         this.inputAndDesiredOutputList = inputAndDesiredOutputList;
-        size = inputAndDesiredOutputList.size();
     }
 
     public void setInputAndDesiredOutputList(List<InputAndDesiredOutput> inputAndDesiredOutputList) {
@@ -24,22 +21,21 @@ public class TrainData {
 
     public void add(float[] input, float[] output) {
         inputAndDesiredOutputList.add(new InputAndDesiredOutput(input, output));
-        size++;
     }
 
     public int size() {
-        return size;
+        return inputAndDesiredOutputList.size();
     }
 
     public float[] getInput(int i) {
-        if (i > size) {
+        if (i > inputAndDesiredOutputList.size()) {
             throw new IllegalArgumentException("Can't return result: outbound of traindata");
         }
         return inputAndDesiredOutputList.get(i).getInput();
     }
 
     public float[] getDesiredOutput(int i) {
-        if (i > size) {
+        if (i > inputAndDesiredOutputList.size()) {
             throw new IllegalArgumentException("Can't return result: outbound of traindata");
         }
         return inputAndDesiredOutputList.get(i).getDesiredOutput();
