@@ -9,97 +9,143 @@ import perceptronbp.neuralnetwork.layers.LayerFactory;
 import perceptronbp.neuralnetwork.traindata.InputAndDesiredOutput;
 import perceptronbp.neuralnetwork.traindata.TrainData;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
- * Main class to run the Perceptron;
+ * Main class to run and test the Perceptron;
  */
 public class Runner {
 
     public static void main(String[] args) throws Exception {
+        runLetterRecognizeSuite();
+//        runXorSuite();
+    }
 
-//        double lambda = 1d;
+    public static void runLetterRecognizeSuite() throws IOException {
+        double lambda = 1d;
 
-//        List<Layer> layers = new LayerFactory(24)
-//                .addLayer(10, new TangensoidActivationFunction(lambda))
-//                .addLayer(5, new TangensoidActivationFunction(lambda))
-//                .getLayers();
-//
-//
-//        Perceptron perceptron = new Perceptron.Builder(layers)
-//                .withLearningCoefficient(0.1d)
-//                .build();
-//
-//        // prepare trainData
-//        ArrayList<double[]> trainData = new ArrayList<>();
-//        ArrayList<double[]> dOutputs = new ArrayList<>();
-//
-//        int filledColorCode = -14503604;
-//        int pixelSize = 36;
-//        int height = 6;
-//        int width = 4;
-//        int border = 1;
-//        ImageInputExtractor inputExtractor = new ImageInputExtractor(filledColorCode, pixelSize, height, width, border);
-//
-//        //neurons: {A, B, C, D, E}. e.g. desired output for neuron B is {0, 1, 0, 0, 0}
-//
-//        // A
-//        trainData.add(inputExtractor.get("img/a1.bmp")); dOutputs.add(new double[]{1, 0, 0, 0, 0});
-//        trainData.add(inputExtractor.get("img/a2.bmp")); dOutputs.add(new double[]{1, 0, 0, 0, 0});
-//        trainData.add(inputExtractor.get("img/a3.bmp")); dOutputs.add(new double[]{1, 0, 0, 0, 0});
-//        trainData.add(inputExtractor.get("img/a4.bmp")); dOutputs.add(new double[]{1, 0, 0, 0, 0});
-//        trainData.add(inputExtractor.get("img/a5.bmp")); dOutputs.add(new double[]{1, 0, 0, 0, 0});
-//
-//        // B
-//        trainData.add(inputExtractor.get("img/b1.bmp")); dOutputs.add(new double[]{0, 1, 0, 0, 0});
-//        trainData.add(inputExtractor.get("img/b2.bmp")); dOutputs.add(new double[]{0, 1, 0, 0, 0});
-//        trainData.add(inputExtractor.get("img/b3.bmp")); dOutputs.add(new double[]{0, 1, 0, 0, 0});
-//        trainData.add(inputExtractor.get("img/b4.bmp")); dOutputs.add(new double[]{0, 1, 0, 0, 0});
-//
-//        // C
-//        trainData.add(inputExtractor.get("img/c1.bmp")); dOutputs.add(new double[]{0, 0, 1, 0, 0});
-//        trainData.add(inputExtractor.get("img/c2.bmp")); dOutputs.add(new double[]{0, 0, 1, 0, 0});
-//        trainData.add(inputExtractor.get("img/c3.bmp")); dOutputs.add(new double[]{0, 0, 1, 0, 0});
-//        trainData.add(inputExtractor.get("img/c4.bmp")); dOutputs.add(new double[]{0, 0, 1, 0, 0});
-//
-//        // D
-//        trainData.add(inputExtractor.get("img/d1.bmp")); dOutputs.add(new double[]{0, 0, 0, 1, 0});
-//        trainData.add(inputExtractor.get("img/d2.bmp")); dOutputs.add(new double[]{0, 0, 0, 1, 0});
-//        trainData.add(inputExtractor.get("img/d3.bmp")); dOutputs.add(new double[]{0, 0, 0, 1, 0});
-//        trainData.add(inputExtractor.get("img/d4.bmp")); dOutputs.add(new double[]{0, 0, 0, 1, 0});
-//
-//        // E
-//        trainData.add(inputExtractor.get("img/e1.bmp")); dOutputs.add(new double[]{0, 0, 0, 0, 1});
-//        trainData.add(inputExtractor.get("img/e2.bmp")); dOutputs.add(new double[]{0, 0, 0, 0, 1});
-//        trainData.add(inputExtractor.get("img/e3.bmp")); dOutputs.add(new double[]{0, 0, 0, 0, 1});
-//        trainData.add(inputExtractor.get("img/e4.bmp")); dOutputs.add(new double[]{0, 0, 0, 0, 1});
-//
-//        //let's learn
-//        int maxEpochs = 30000;
-//        perceptron.learn(trainData, dOutputs, maxEpochs);
-//
-//
-//        System.out.println("NOW TESTING!");
-//        ArrayList<double[]> testTrainData = new ArrayList<>();
-//        ArrayList<double[]> testDOutputs = new ArrayList<>();
-//
-//        // test data
-//        testTrainData.add(inputExtractor.get("img/a6.bmp")); testDOutputs.add(new double[]{1, 0, 0, 0, 0});
-//        testTrainData.add(inputExtractor.get("img/b5.bmp")); testDOutputs.add(new double[]{0, 1, 0, 0, 0});
-//        testTrainData.add(inputExtractor.get("img/c5.bmp")); testDOutputs.add(new double[]{0, 0, 1, 0, 0});
-//        testTrainData.add(inputExtractor.get("img/d5.bmp")); testDOutputs.add(new double[]{0, 0, 0, 1, 0});
-//        testTrainData.add(inputExtractor.get("img/e5.bmp")); testDOutputs.add(new double[]{0, 0, 0, 0, 1});
-//        perceptron.test(testTrainData, testDOutputs);
-//
+        List<Layer> layers = new LayerFactory(24)
+                .addLayer(20, new TangensoidActivationFunction(lambda))
+                .addLayer(5, new SigmoidActivationFunction(lambda))
+                .getLayers();
 
+        Perceptron perceptron = new Perceptron.Builder(layers)
+                .withLearningCoefficient(0.1d)
+                .build();
 
+        // prepare trainData
+        ArrayList<double[]> trainData = new ArrayList<>();
+        ArrayList<double[]> dOutputs = new ArrayList<>();
 
+        int filledColorCode = -14503604;
+        int pixelSize = 36;
+        int height = 6;
+        int width = 4;
+        int border = 1;
+        ImageInputExtractor inputExtractor = new ImageInputExtractor(filledColorCode, pixelSize, height, width, border);
 
+        //let's learn
+        int maxEpochs = 30000;
+        perceptron.learn(createLetterRecognizeData(), maxEpochs);
+
+        System.out.println("NOW TESTING!");
+
+        // test data
+        testLetter(perceptron, inputExtractor.get("img/a6.bmp"), new double[]{1, 0, 0, 0, 0});
+        testLetter(perceptron, inputExtractor.get("img/b5.bmp"), new double[]{0, 1, 0, 0, 0});
+        testLetter(perceptron, inputExtractor.get("img/c5.bmp"), new double[]{0, 0, 1, 0, 0});
+        testLetter(perceptron, inputExtractor.get("img/d5.bmp"), new double[]{0, 0, 0, 1, 0});
+        testLetter(perceptron, inputExtractor.get("img/e5.bmp"), new double[]{0, 0, 0, 0, 1});
+    }
+
+    public static void testLetter(Perceptron perceptron, double[] input, double[] desiredOutput) {
+        printInputLetter(input);
+        System.out.println("\r\nI think it's:");
+        printOutputLetter(perceptron.calculateOutput(input));
+        System.out.println("\r\n\r\n\r\n");
+    }
+
+    public static TrainData createLetterRecognizeData() throws IOException {
+        int filledColorCode = -14503604;
+        int pixelSize = 36;
+        int height = 6;
+        int width = 4;
+        int border = 1;
+        ImageInputExtractor inputExtractor = new ImageInputExtractor(filledColorCode, pixelSize, height, width, border);
+
+        TrainData trainData = new TrainData();
+        //neurons: {A, B, C, D, E}. e.g. desired output for neuron B is {0, 1, 0, 0, 0}
+        // A
+        trainData.add(inputExtractor.get("img/a1.bmp"), new double[]{1, 0, 0, 0, 0});
+        trainData.add(inputExtractor.get("img/a2.bmp"), new double[]{1, 0, 0, 0, 0});
+        trainData.add(inputExtractor.get("img/a3.bmp"), new double[]{1, 0, 0, 0, 0});
+        trainData.add(inputExtractor.get("img/a4.bmp"), new double[]{1, 0, 0, 0, 0});
+        trainData.add(inputExtractor.get("img/a5.bmp"), new double[]{1, 0, 0, 0, 0});
+
+        // B
+        trainData.add(inputExtractor.get("img/b1.bmp"), new double[]{0, 1, 0, 0, 0});
+        trainData.add(inputExtractor.get("img/b2.bmp"), new double[]{0, 1, 0, 0, 0});
+        trainData.add(inputExtractor.get("img/b3.bmp"), new double[]{0, 1, 0, 0, 0});
+        trainData.add(inputExtractor.get("img/b4.bmp"), new double[]{0, 1, 0, 0, 0});
+
+        // C
+        trainData.add(inputExtractor.get("img/c1.bmp"), new double[]{0, 0, 1, 0, 0});
+        trainData.add(inputExtractor.get("img/c2.bmp"), new double[]{0, 0, 1, 0, 0});
+        trainData.add(inputExtractor.get("img/c3.bmp"), new double[]{0, 0, 1, 0, 0});
+        trainData.add(inputExtractor.get("img/c4.bmp"), new double[]{0, 0, 1, 0, 0});
+
+        // D
+        trainData.add(inputExtractor.get("img/d1.bmp"), new double[]{0, 0, 0, 1, 0});
+        trainData.add(inputExtractor.get("img/d2.bmp"), new double[]{0, 0, 0, 1, 0});
+        trainData.add(inputExtractor.get("img/d3.bmp"), new double[]{0, 0, 0, 1, 0});
+        trainData.add(inputExtractor.get("img/d4.bmp"), new double[]{0, 0, 0, 1, 0});
+
+        // E
+        trainData.add(inputExtractor.get("img/e1.bmp"), new double[]{0, 0, 0, 0, 1});
+        trainData.add(inputExtractor.get("img/e2.bmp"), new double[]{0, 0, 0, 0, 1});
+        trainData.add(inputExtractor.get("img/e3.bmp"), new double[]{0, 0, 0, 0, 1});
+        trainData.add(inputExtractor.get("img/e4.bmp"), new double[]{0, 0, 0, 0, 1});
+
+        return trainData;
+    }
+
+    private static void printInputLetter (double[] input) {
+        String result="";
+        int count = 0;
+        for (int i = 0; i < 6; ++i){
+            for (int j = 0; j < 4; ++j) {
+
+                if (input[count] == 1) result += "1";
+                else result += " ";
+
+                ++count;
+            }
+            result+="\r\n";
+        }
+        System.out.println(result);
+    }
+
+    private static void printOutputLetter (double[] input) {
+        double maxValue = input[0];
+        int maxValueIndex = 0;
+
+        for (int i = 1; i < input.length; ++i) {
+            if (input[i] > maxValue) {
+                maxValue = input[i];
+                maxValueIndex = i;
+            }
+        }
+
+        char result =  'a';
+        result += maxValueIndex;
+        System.out.print(result);
+    }
+
+    public static void runXorSuite() {
         // implementing XOR function
         //2 inputs, 2 hidden layers, 1 output layer. Can store any number of hidden layers
-
         double lambda = 1d;
 
         List<Layer> layers2 = new LayerFactory(2)
@@ -117,16 +163,17 @@ public class Runner {
         perceptron2.learn(createTrainDataXOR(), maxEpochs);
 
         // testing
-        double[] output = perceptron2.calculateOutput(new double[]{0,0});
-        System.out.println(Arrays.toString(output));
-//        perceptron2.testXor(createTrainDataXOR(), createDesiredOutputDataXOR());
+        System.out.println("Should be false: " + testXor(perceptron2.calculateOutput(new double[]{0,0}), 0.1));
+        System.out.println("Should be true: " + testXor(perceptron2.calculateOutput(new double[]{0,1}), 0.1));
+        System.out.println("Should be true: " + testXor(perceptron2.calculateOutput(new double[]{1,0}), 0.1));
+        System.out.println("Should be false: " + testXor(perceptron2.calculateOutput(new double[]{0,0}), 0.1));
+
+    }
+    public static boolean testXor(double[] value, double threshold) {
+        return value[0] > threshold;
     }
 
-
-
-
     public static TrainData createTrainDataXOR() {
-
         List<InputAndDesiredOutput> inputAndDesiredOutputList = new ArrayList<>(4);
         inputAndDesiredOutputList.add(new InputAndDesiredOutput(new double[]{0,0}, new double[]{0}));
         inputAndDesiredOutputList.add(new InputAndDesiredOutput(new double[]{0,1}, new double[]{1}));
@@ -137,19 +184,4 @@ public class Runner {
 
         return trainData;
     }
-
-
-    public static ArrayList<double[]> createDesiredOutputDataXOR() {
-
-          ArrayList<double[]> dOutputs = new ArrayList<>();
-
-
-            dOutputs.add(new double[]{0});
-            dOutputs.add(new double[]{1});
-            dOutputs.add(new double[]{1});
-            dOutputs.add(new double[]{0});
-
-          return dOutputs;
-    }
-
 }

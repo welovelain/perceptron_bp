@@ -1,5 +1,7 @@
 package perceptronbp.neuralnetwork.activationfunctions;
 
+import perceptronbp.neuralnetwork.activationfunctions.ActivationFunction;
+
 public class SigmoidActivationFunction implements ActivationFunction {
 
     private double lambda;

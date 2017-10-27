@@ -1,11 +1,17 @@
 package perceptronbp.neuralnetwork.traindata;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class TrainData {
     private List<InputAndDesiredOutput> inputAndDesiredOutputList;
     private int size;
+
+    public TrainData() {
+        inputAndDesiredOutputList = new ArrayList<>(0);
+        size = 0;
+    }
 
     public TrainData(List<InputAndDesiredOutput> inputAndDesiredOutputList) {
         this.inputAndDesiredOutputList = inputAndDesiredOutputList;
@@ -14,6 +20,11 @@ public class TrainData {
 
     public void setInputAndDesiredOutputList(List<InputAndDesiredOutput> inputAndDesiredOutputList) {
         this.inputAndDesiredOutputList = inputAndDesiredOutputList;
+    }
+
+    public void add(double[] input, double[] output) {
+        inputAndDesiredOutputList.add(new InputAndDesiredOutput(input, output));
+        size++;
     }
 
     public int size() {

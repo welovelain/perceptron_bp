@@ -5,6 +5,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Converts images to vector
+ */
 public class ImageInputExtractor {
     private final int PIXEL_FILLED = 1;
     private final int PIXEL_EMPTY = 0;
@@ -77,38 +80,5 @@ public class ImageInputExtractor {
         ClassLoader cl = getClass().getClassLoader();
         return ImageIO.read(new File(cl.getResource(filepath).getFile()));
     }
-
-//    // the squares are 36x36 pixels
-//    static double[] get(String filepath) throws IOException {
-//
-//        double[] result = new double[height * width];
-//
-//
-//        BufferedImage image = getImageFromFile(filepath);
-//
-//        int pixelColor = 0;
-//        int x = 5;
-//        int y = 5;
-//
-//        int count = 0;
-//        for (int i = 0; i < 6; ++i ) {
-//            for (int j = 0; j < 4; ++j ) {
-//                if (image.getRGB(x, y) == GREEN) result[count] = 1;
-//                else result[count] = 0;
-//
-//                if (j != 4) x+=35;
-//                ++count;
-//            }
-//            x = 5; y+=36;
-//
-//        }
-//
-//
-//
-//
-//        return result;
-//    }
-
-
 
 }

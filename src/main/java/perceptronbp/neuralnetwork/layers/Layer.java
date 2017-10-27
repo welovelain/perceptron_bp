@@ -1,11 +1,9 @@
 package perceptronbp.neuralnetwork.layers;
 
-import perceptronbp.matrix.SimpleMatrixSolver;
+import perceptronbp.matrix.Matrix;
 import perceptronbp.neuralnetwork.Perceptron;
 import perceptronbp.neuralnetwork.activationfunctions.ActivationFunction;
 import perceptronbp.neuralnetwork.activationfunctions.TangensoidActivationFunction;
-
-import java.util.Arrays;
 
 public class Layer {
 
@@ -24,7 +22,7 @@ public class Layer {
         this.amountOfNeurons = amountOfNeurons;
 
         // init weights
-        weights = SimpleMatrixSolver.random(amountOfNeurons, amountOfPreviousLayerOutputs);
+        weights = Matrix.random(amountOfNeurons, amountOfPreviousLayerOutputs);
     }
 
     public double[][] getWeights() {
@@ -70,7 +68,7 @@ public class Layer {
      */
     public void calculateOutput(double[] input) {
         input = Perceptron.addBias(input);
-        double[] net = SimpleMatrixSolver.multiply(weights, input);
+        double[] net = Matrix.multiply(weights, input);
         currentOutput = activationFunction.activate(net);
     }
 
