@@ -18,12 +18,12 @@ public class TangensoidActivationFunction implements ActivationFunction {
      *  2 / (1+e^(-lambda*n)) - 1
      */
     @Override
-    public double[] activate(double [] inputs) {
-        double[] outputs = new double[inputs.length];
-        double result;
+    public float[] activate(float [] inputs) {
+        float[] outputs = new float[inputs.length];
+        float result;
 
         for (int i = 0; i < inputs.length; ++i ){
-            result = (2 / (1 + Math.exp(-lambda * inputs[i]))) - 1;
+            result = (float)((2 / (1 + Math.exp(-lambda * inputs[i]))) - 1);
             outputs[i] = result;
         }
 
@@ -31,7 +31,7 @@ public class TangensoidActivationFunction implements ActivationFunction {
     }
 
     @Override
-    public double getDerivative(double input) {
-        return 1 - Math.pow(input, 2);
+    public float getDerivative(float input) {
+        return (float)(1 - Math.pow(input, 2));
     }
 }

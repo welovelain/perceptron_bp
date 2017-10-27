@@ -2,29 +2,29 @@ package perceptronbp.neuralnetwork.traindata;
 
 public class InputAndDesiredOutput {
     // input vector
-    private double[] input;
+    private float[] input;
 
     // desired output vector
-    private double[] desiredOutput;
+    private float[] desiredOutput;
 
-    public InputAndDesiredOutput(double[] input, double[] desiredOutput) {
+    public InputAndDesiredOutput(float[] input, float[] desiredOutput) {
         this.input = input;
         this.desiredOutput = desiredOutput;
     }
 
-    public double[] getInput() {
+    public float[] getInput() {
         return input;
     }
 
-    public void setInput(double[] input) {
+    public void setInput(float[] input) {
         this.input = input;
     }
 
-    public double[] getDesiredOutput() {
+    public float[] getDesiredOutput() {
         return desiredOutput;
     }
 
-    public void setDesiredOutput(double[] desiredOutput) {
+    public void setDesiredOutput(float[] desiredOutput) {
         this.desiredOutput = desiredOutput;
     }
 }

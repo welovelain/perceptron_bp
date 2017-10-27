@@ -8,14 +8,14 @@ import perceptronbp.neuralnetwork.activationfunctions.TangensoidActivationFuncti
 public class Layer {
 
     private int counter;
-    private double[][] weights;
+    private float[][] weights;
     private int amountOfNeurons;
 
     private ActivationFunction DEFAULT_ACTIVATION_FUNCTION = new TangensoidActivationFunction(1d);
     private ActivationFunction activationFunction = DEFAULT_ACTIVATION_FUNCTION;
 
-    private double[] currentOutput;
-    private double[] errorVector;
+    private float[] currentOutput;
+    private float[] errorVector;
 
     public Layer(int counter, int amountOfNeurons, int amountOfPreviousLayerOutputs) {
         this.counter = counter;
@@ -25,11 +25,11 @@ public class Layer {
         weights = Matrix.random(amountOfNeurons, amountOfPreviousLayerOutputs);
     }
 
-    public double[][] getWeights() {
+    public float[][] getWeights() {
         return weights;
     }
 
-    public void setWeights(double[][] weights) {
+    public void setWeights(float[][] weights) {
         this.weights = weights;
     }
 
@@ -53,11 +53,11 @@ public class Layer {
         this.counter = counter;
     }
 
-    public double[] getCurrentOutput() {
+    public float[] getCurrentOutput() {
         return currentOutput;
     }
 
-    public double[] getErrorVector() {
+    public float[] getErrorVector() {
         return errorVector;
     }
 
@@ -66,22 +66,22 @@ public class Layer {
      * @param input input vector X
      * @return result of activation function with the Weights * X input.
      */
-    public void calculateOutput(double[] input) {
+    public void calculateOutput(float[] input) {
         input = Perceptron.addBias(input);
-        double[] net = Matrix.multiply(weights, input);
+        float[] net = Matrix.multiply(weights, input);
         currentOutput = activationFunction.activate(net);
     }
 
     /**
      * Use this method if the layer is the last layer.
      */
-    public void calculateError(double[] desiredOutputVector) {
-        errorVector = new double[currentOutput.length];
+    public void calculateError(float[] desiredOutputVector) {
+        errorVector = new float[currentOutput.length];
 
-        double error;
+        float error;
         for (int i = 0; i < currentOutput.length; ++i) {
-            double y = currentOutput[i];
-            double d = desiredOutputVector[i];
+            float y = currentOutput[i];
+            float d = desiredOutputVector[i];
             error = activationFunction.getDerivative(y) * (d - y);
             errorVector[i] = error;
         }
@@ -92,16 +92,16 @@ public class Layer {
      * @param desiredOutputVector
      * @param nextLayer
      */
-    public void calculateError(double[] desiredOutputVector, Layer nextLayer) {
-        double error;
-        double sum;
-        errorVector = new double[currentOutput.length];
-        double[] nextLayerErrorVector = nextLayer.getErrorVector();
+    public void calculateError(float[] desiredOutputVector, Layer nextLayer) {
+        float error;
+        float sum;
+        errorVector = new float[currentOutput.length];
+        float[] nextLayerErrorVector = nextLayer.getErrorVector();
 
         for (int i = 0; i < currentOutput.length; ++i) {
-            sum = 0d;
+            sum = 0f;
             for (int j = 0; j < nextLayerErrorVector.length; ++j) {
-                double connectedWeights = nextLayer.getWeights()[j][i];
+                float connectedWeights = nextLayer.getWeights()[j][i];
                 sum += nextLayerErrorVector[j] * connectedWeights;
             }
             error = activationFunction.getDerivative(currentOutput[i]) * sum;

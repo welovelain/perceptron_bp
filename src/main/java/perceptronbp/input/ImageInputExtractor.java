@@ -55,8 +55,8 @@ public class ImageInputExtractor {
         this.border = border;
     }
 
-    public double[] get(String filepath) throws IOException {
-        double[] result = new double[height * width];
+    public float[] get(String filepath) throws IOException {
+        float[] result = new float[height * width];
         BufferedImage pixel = getImageFromFile(filepath);
 
         // ignore borders

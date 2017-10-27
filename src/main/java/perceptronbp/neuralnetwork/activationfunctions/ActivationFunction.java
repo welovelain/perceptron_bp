@@ -1,6 +1,6 @@
 package perceptronbp.neuralnetwork.activationfunctions;
 
 public interface ActivationFunction {
-    double[] activate(double [] inputs);
-    double getDerivative(double input);
+    float[] activate(float [] inputs);
+    float getDerivative(float input);
 }

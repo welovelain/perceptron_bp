@@ -22,7 +22,7 @@ public class TrainData {
         this.inputAndDesiredOutputList = inputAndDesiredOutputList;
     }
 
-    public void add(double[] input, double[] output) {
+    public void add(float[] input, float[] output) {
         inputAndDesiredOutputList.add(new InputAndDesiredOutput(input, output));
         size++;
     }
@@ -31,14 +31,14 @@ public class TrainData {
         return size;
     }
 
-    public double[] getInput(int i) {
+    public float[] getInput(int i) {
         if (i > size) {
             throw new IllegalArgumentException("Can't return result: outbound of traindata");
         }
         return inputAndDesiredOutputList.get(i).getInput();
     }
 
-    public double[] getDesiredOutput(int i) {
+    public float[] getDesiredOutput(int i) {
         if (i > size) {
             throw new IllegalArgumentException("Can't return result: outbound of traindata");
         }

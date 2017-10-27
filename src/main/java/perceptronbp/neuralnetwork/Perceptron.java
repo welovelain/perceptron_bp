@@ -11,8 +11,8 @@ import java.util.ListIterator;
 public class Perceptron {
 
     private List<Layer> layerList;
-    private double meanSquaredError = 0;
-    private double learningCoefficient;
+    private float meanSquaredError = 0;
+    private float learningCoefficient;
 
     private Perceptron(Builder builder) {
         this.layerList = builder.layerList;
@@ -21,9 +21,9 @@ public class Perceptron {
 
     public static class Builder {
 
-        private double DEFAULT_LEARNING_COEFFICIENT = 0.1d;
+        private float DEFAULT_LEARNING_COEFFICIENT = 0.1f;
         private List<Layer> layerList;
-        private double learningCoefficient = DEFAULT_LEARNING_COEFFICIENT;
+        private float learningCoefficient = DEFAULT_LEARNING_COEFFICIENT;
 
         public Builder(List<Layer> layerList) {
             if (layerList.isEmpty() || layerList == null) {
@@ -32,7 +32,7 @@ public class Perceptron {
             this.layerList = layerList;
         }
 
-        public Builder withLearningCoefficient(double learningCoefficient) {
+        public Builder withLearningCoefficient(float learningCoefficient) {
 
             if (learningCoefficient <= 0) {
                 throw new IllegalArgumentException("Learning coefficient should be > 0");
@@ -47,8 +47,8 @@ public class Perceptron {
     }
 
     public void learn(TrainData trainData, int maxEpochs) {
-        double [] inputVector;
-        double [] dOutputVector;
+        float [] inputVector;
+        float [] dOutputVector;
 
         for (int epoch = 0; epoch < maxEpochs; ++epoch) {
             meanSquaredError = 0;
@@ -70,8 +70,8 @@ public class Perceptron {
         }
     }
 
-    public double[] calculateOutput(double[] initialInput) {
-        double[] input = initialInput;
+    public float[] calculateOutput(float[] initialInput) {
+        float[] input = initialInput;
         for (Layer layer: layerList) {
             layer.calculateOutput(input);
             input = layer.getCurrentOutput();
@@ -80,10 +80,10 @@ public class Perceptron {
     }
 
     // MSE = 1/n * SUM [(d_o - y_o)^2]
-    private void calcMSE (double[] dOutputs) {
+    private void calcMSE (float[] dOutputs) {
 
         Layer finalLayer = layerList.get(layerList.size() - 1);
-        double[] finalOutput = finalLayer.getCurrentOutput();
+        float[] finalOutput = finalLayer.getCurrentOutput();
         for (int i = 0; i < finalOutput.length; ++ i ) {
             meanSquaredError += (Math.pow((dOutputs[i] - finalOutput[i]), 2));
         }
@@ -91,7 +91,7 @@ public class Perceptron {
     }
 
     // calculate Errors of each neuron. Back-propagating from last layer to the first
-    public void calcNeuronErrors(double[] desiredOutputVector) {
+    public void calcNeuronErrors(float[] desiredOutputVector) {
         ListIterator<Layer> li = layerList.listIterator(layerList.size());
         Layer lastLayer = li.previous();
         lastLayer.calculateError(desiredOutputVector);
@@ -104,16 +104,16 @@ public class Perceptron {
     }
 
      // deltaW = lCoef * d * z
-    private void calcNewWeights(double[] inputVector) {
-        double[] errorVector;
+    private void calcNewWeights(float[] inputVector) {
+        float[] errorVector;
 
         for (Layer layer: layerList) {
             inputVector = addBias(inputVector);
 
-            double[][] oldWeight = layer.getWeights();
+            float[][] oldWeight = layer.getWeights();
             errorVector = layer.getErrorVector();
 
-            double[][] weightDelta = new double[errorVector.length][inputVector.length];
+            float[][] weightDelta = new float[errorVector.length][inputVector.length];
 
             // TODO -> Multiply by matrix
             for (int i = 0; i < errorVector.length - 1; ++i) {
@@ -122,7 +122,7 @@ public class Perceptron {
                 }
             }
 
-            double[][] newWeights = Matrix.add(oldWeight, weightDelta);
+            float[][] newWeights = Matrix.add(oldWeight, weightDelta);
             layer.setWeights(newWeights);
             inputVector = layer.getCurrentOutput();
         }
@@ -131,8 +131,8 @@ public class Perceptron {
     /* Static methods */
 
     //Add 1 to inputs at the end
-    public static double[] addBias(double[] inputs){
-        double[] outputs = Arrays.copyOf(inputs, inputs.length+1);
+    public static float[] addBias(float[] inputs){
+        float[] outputs = Arrays.copyOf(inputs, inputs.length+1);
         outputs[outputs.length - 1] = 1;
         return outputs;
     }

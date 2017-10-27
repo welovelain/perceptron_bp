@@ -4,9 +4,9 @@ import perceptronbp.neuralnetwork.activationfunctions.ActivationFunction;
 
 public class SigmoidActivationFunction implements ActivationFunction {
 
-    private double lambda;
+    private float lambda;
 
-    public SigmoidActivationFunction(double lambda) {
+    public SigmoidActivationFunction(float lambda) {
         if (lambda <= 0) {
             throw new IllegalArgumentException("Lambda must be > 0");
         }
@@ -17,12 +17,12 @@ public class SigmoidActivationFunction implements ActivationFunction {
      *  1 / (1+e^(-lambda*n))
      */
     @Override
-    public double[] activate(double [] inputs) {
-        double[] outputs = new double[inputs.length];
-        double result;
+    public float[] activate(float [] inputs) {
+        float[] outputs = new float[inputs.length];
+        float result;
 
         for (int i = 0; i < inputs.length; ++i ){
-            result = 1 / (1 + Math.exp(-lambda * inputs[i]));
+            result = (float)(1 / (1 + Math.exp(-lambda * inputs[i])));
             outputs[i] = result;
         }
 
@@ -30,7 +30,7 @@ public class SigmoidActivationFunction implements ActivationFunction {
     }
 
     @Override
-    public double getDerivative(double input) {
-        return input * (1 - input);
+    public float getDerivative(float input) {
+        return (float)(input * (1 - input));
     }
 }

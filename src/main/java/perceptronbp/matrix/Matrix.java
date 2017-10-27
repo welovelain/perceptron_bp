@@ -5,49 +5,49 @@ import java.util.Random;
 public class Matrix {
 
     // return a random m-by-n matrix with values between -0.5 and 0.5
-    public static double[][] random(int m, int n) {
-        double[][] C = new double[m][n];
+    public static float[][] random(int m, int n) {
+        float[][] C = new float[m][n];
         for (int i = 0; i < m; i++)
             for (int j = 0; j < n; j++){
-                C[i][j] = Math.random() - 0.5;
+                C[i][j] = (float)(Math.random() - 0.5);
                 String str = String.format("%1.2f", C[i][j]); //round weight to 0.xx
-                C[i][j] = Double.valueOf(str);
+                C[i][j] = Float.valueOf(str);
             }
         return C;
     }
 
     
      // return a random m-by-n matrix with values between 0 and 10
-    public static double[][] randomInt(int m, int n) {
+    public static float[][] randomInt(int m, int n) {
         Random rand = new Random(10);
-        double[][] C = new double[m][n];
+        float[][] C = new float[m][n];
         for (int i = 0; i < m; i++)
             for (int j = 0; j < n; j++)
                 C[i][j] = Math.round(Math.random()*10);
         return C;
     }
     // return n-by-n identity matrix I
-    public static double[][] identity(int n) {
-        double[][] I = new double[n][n];
+    public static float[][] identity(int n) {
+        float[][] I = new float[n][n];
         for (int i = 0; i < n; i++)
             I[i][i] = 1;
         return I;
     }
 
     // return x^T y
-    public static double dot(double[] x, double[] y) {
+    public static float dot(float[] x, float[] y) {
         if (x.length != y.length) throw new RuntimeException("Illegal vector dimensions.");
-        double sum = 0.0;
+        float sum = 0.0f;
         for (int i = 0; i < x.length; i++)
             sum += x[i] * y[i];
         return sum;
     }
 
     // return C = A^T
-    public static double[][] transpose(double[][] A) {
+    public static float[][] transpose(float[][] A) {
         int m = A.length;
         int n = A[0].length;
-        double[][] C = new double[n][m];
+        float[][] C = new float[n][m];
         for (int i = 0; i < m; i++)
             for (int j = 0; j < n; j++)
                 C[j][i] = A[i][j];
@@ -55,10 +55,10 @@ public class Matrix {
     }
 
     // return C = A + B
-    public static double[][] add(double[][] A, double[][] B) {
+    public static float[][] add(float[][] A, float[][] B) {
         int m = A.length;
         int n = A[0].length;
-        double[][] C = new double[m][n];
+        float[][] C = new float[m][n];
         for (int i = 0; i < m; i++)
             for (int j = 0; j < n; j++)
                 C[i][j] = A[i][j] + B[i][j];
@@ -66,10 +66,10 @@ public class Matrix {
     }
 
     // return C = A - B
-    public static double[][] subtract(double[][] A, double[][] B) {
+    public static float[][] subtract(float[][] A, float[][] B) {
         int m = A.length;
         int n = A[0].length;
-        double[][] C = new double[m][n];
+        float[][] C = new float[m][n];
         for (int i = 0; i < m; i++)
             for (int j = 0; j < n; j++)
                 C[i][j] = A[i][j] - B[i][j];
@@ -77,13 +77,13 @@ public class Matrix {
     }
 
     // return C = A * B
-    public static double[][] multiply(double[][] A, double[][] B) {
+    public static float[][] multiply(float[][] A, float[][] B) {
         int mA = A.length;
         int nA = A[0].length;
         int mB = B.length;
         int nB = B[0].length;
         if (nA != mB) throw new RuntimeException("Illegal matrix dimensions.");
-        double[][] C = new double[mA][nB];
+        float[][] C = new float[mA][nB];
         for (int i = 0; i < mA; i++)
             for (int j = 0; j < nB; j++)
                 for (int k = 0; k < nA; k++)
@@ -92,11 +92,11 @@ public class Matrix {
     }
 
     // matrix-vector multiplication (y = A * x)
-    public static double[] multiply(double[][] A, double[] x) {
+    public static float[] multiply(float[][] A, float[] x) {
         int m = A.length;
         int n = A[0].length;
         if (x.length != n) throw new RuntimeException("Illegal matrix dimensions.");
-        double[] y = new double[m];
+        float[] y = new float[m];
         for (int i = 0; i < m; i++)
             for (int j = 0; j < n; j++)
                 y[i] += A[i][j] * x[j];
@@ -105,11 +105,11 @@ public class Matrix {
 
 
     // vector-matrix multiplication (y = x^T A)
-    public static double[] multiply(double[] x, double[][] A) {
+    public static float[] multiply(float[] x, float[][] A) {
         int m = A.length;
         int n = A[0].length;
         if (x.length != m) throw new RuntimeException("Illegal matrix dimensions.");
-        double[] y = new double[n];
+        float[] y = new float[n];
         for (int j = 0; j < n; j++)
             for (int i = 0; i < m; i++)
                 y[j] += A[i][j] * x[i];
@@ -117,10 +117,10 @@ public class Matrix {
     }
     
     // matrix-number multiplication (y = A * x)
-    public static double[][] multiply(double[][] A, double x) {
+    public static float[][] multiply(float[][] A, float x) {
         int m = A.length;
         int n = A[0].length;
-        double[][] C = new double[m][n];
+        float[][] C = new float[m][n];
         for (int i = 0; i < m; i++)
             for (int j = 0; j < n; j++)
                 C[i][j] = A[i][j] *x;
@@ -128,16 +128,16 @@ public class Matrix {
     }
     
     // vector-number multiplication (y = A * x)
-    public static double[] multiply(double[] A, double x) {
+    public static float[] multiply(float[] A, float x) {
         int m = A.length;
-        double[] C = new double[m];
+        float[] C = new float[m];
         for (int i = 0; i < m; i++)
                 C[i] = A[i] *x;
         return C;
     }
     
     // print matrix
-    public static void print(double[][] A) {
+    public static void print(float[][] A) {
         int m = A.length;
         int n = A[0].length;
         
@@ -149,7 +149,7 @@ public class Matrix {
     }
     
     // print vector
-    public static void print(double[] A) {
+    public static void print(float[] A) {
         int m = A.length;
         
         for (int i = 0; i < m; ++i ){            
