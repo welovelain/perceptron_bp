@@ -102,12 +102,9 @@ public class Layer {
 
         for (int i = 0; i < currentOutput.length; ++i) {
             sum = 0d;
-
             for (int j = 0; j < nextLayerErrorVector.length; ++j) {
                 double connectedWeights = nextLayer.getWeights()[j][i];
                 sum += nextLayerErrorVector[j] * connectedWeights;
-
-
             }
             error = activationFunction.getDerivative(currentOutput[i]) * sum;
             errorVector[i] = error;

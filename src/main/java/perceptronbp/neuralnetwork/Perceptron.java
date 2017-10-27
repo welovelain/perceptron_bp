@@ -2,6 +2,7 @@ package perceptronbp.neuralnetwork;
 
 import perceptronbp.matrix.SimpleMatrixSolver;
 import perceptronbp.neuralnetwork.layers.Layer;
+import perceptronbp.neuralnetwork.traindata.TrainData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,7 +47,7 @@ public class Perceptron {
         }
     }
 
-    public void learn(ArrayList<double[]> trainData, ArrayList<double[]> dOutputs, int maxEpochs) {
+    public void learn(TrainData trainData, int maxEpochs) {
         double [] inputVector;
         double [] dOutputVector;
 
@@ -55,8 +56,8 @@ public class Perceptron {
 
             // we go input by input
             for (int i = 0; i < trainData.size(); ++i ) {
-                inputVector = trainData.get(i); // vector for one input from batch
-                dOutputVector = dOutputs.get(i); // vector of desired output for this input
+                inputVector = trainData.getInput(i); // vector for one input from batch
+                dOutputVector = trainData.getDesiredOutput(i); // vector of desired output for this input
 
                 calculateOutput(inputVector);
                 calcMSE(dOutputVector);
@@ -65,16 +66,19 @@ public class Perceptron {
             }
 
             // shuffle trainData and dOutputs here
-           System.out.println("epoch: " + epoch + ", MSE: " + meanSquaredError);
+            trainData.shuffle();
+
+            System.out.println("epoch: " + epoch + ", MSE: " + meanSquaredError);
         }
     }
 
-    public void calculateOutput(double[] initialInput) {
+    public double[] calculateOutput(double[] initialInput) {
         double[] input = initialInput;
         for (Layer layer: layerList) {
             layer.calculateOutput(input);
             input = layer.getCurrentOutput();
         }
+        return input;
     }
 
     // MSE = 1/n * SUM [(d_o - y_o)^2]

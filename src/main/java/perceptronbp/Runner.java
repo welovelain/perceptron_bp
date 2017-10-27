@@ -6,8 +6,11 @@ import perceptronbp.neuralnetwork.activationfunctions.SigmoidActivationFunction;
 import perceptronbp.neuralnetwork.activationfunctions.TangensoidActivationFunction;
 import perceptronbp.neuralnetwork.layers.Layer;
 import perceptronbp.neuralnetwork.layers.LayerFactory;
+import perceptronbp.neuralnetwork.traindata.InputAndDesiredOutput;
+import perceptronbp.neuralnetwork.traindata.TrainData;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,8 +20,7 @@ public class Runner {
 
     public static void main(String[] args) throws Exception {
 
-        double lambda = 1d;
-
+//        double lambda = 1d;
 
 //        List<Layer> layers = new LayerFactory(24)
 //                .addLayer(10, new TangensoidActivationFunction(lambda))
@@ -98,6 +100,8 @@ public class Runner {
         // implementing XOR function
         //2 inputs, 2 hidden layers, 1 output layer. Can store any number of hidden layers
 
+        double lambda = 1d;
+
         List<Layer> layers2 = new LayerFactory(2)
                 .addLayer(20, new TangensoidActivationFunction(lambda))
                 .addLayer(18, new TangensoidActivationFunction(lambda))
@@ -110,23 +114,28 @@ public class Runner {
 
         // learning
         int maxEpochs = 50000;
-        perceptron2.learn(createTrainDataXOR(), createDesiredOutputDataXOR(), maxEpochs);
+        perceptron2.learn(createTrainDataXOR(), maxEpochs);
 
         // testing
-        perceptron2.testXor(createTrainDataXOR(), createDesiredOutputDataXOR());
+        double[] output = perceptron2.calculateOutput(new double[]{0,0});
+        System.out.println(Arrays.toString(output));
+//        perceptron2.testXor(createTrainDataXOR(), createDesiredOutputDataXOR());
     }
 
 
-        public static ArrayList<double[]> createTrainDataXOR() {
 
-          ArrayList<double[]> trainData = new ArrayList<>();
 
-          trainData.add(new double[]{0,0});
-          trainData.add(new double[]{0,1});
-          trainData.add(new double[]{1,0});
-          trainData.add(new double[]{1,1});
+    public static TrainData createTrainDataXOR() {
 
-          return trainData;
+        List<InputAndDesiredOutput> inputAndDesiredOutputList = new ArrayList<>(4);
+        inputAndDesiredOutputList.add(new InputAndDesiredOutput(new double[]{0,0}, new double[]{0}));
+        inputAndDesiredOutputList.add(new InputAndDesiredOutput(new double[]{0,1}, new double[]{1}));
+        inputAndDesiredOutputList.add(new InputAndDesiredOutput(new double[]{1,0}, new double[]{1}));
+        inputAndDesiredOutputList.add(new InputAndDesiredOutput(new double[]{1,1}, new double[]{0}));
+
+        TrainData trainData = new TrainData(inputAndDesiredOutputList);
+
+        return trainData;
     }
 
 
