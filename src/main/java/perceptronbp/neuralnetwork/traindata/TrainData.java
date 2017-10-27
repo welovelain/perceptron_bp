@@ -20,6 +20,26 @@ public class TrainData {
     }
 
     public void add(float[] input, float[] output) {
+
+        if (!inputAndDesiredOutputList.isEmpty()) {
+            InputAndDesiredOutput previous = inputAndDesiredOutputList.get(inputAndDesiredOutputList.size() - 1);
+
+            int previousInputLength = previous.getInput().length;
+            int previousDesiredOutputLength = previous.getDesiredOutput().length;
+
+            if (previousInputLength != input.length) {
+                throw new IllegalArgumentException
+                        (String.format("Previous input has size %s, but new data has input size %s. Sizes can't be different.",
+                                previousInputLength, input.length));
+            }
+            if (previousDesiredOutputLength != output.length) {
+                throw new IllegalArgumentException
+                        (String.format("Previous desired output has size %s, but new data has desired output size %s. Sizes can't be different.",
+                                previousDesiredOutputLength, output.length));
+            }
+        }
+
+
         inputAndDesiredOutputList.add(new InputAndDesiredOutput(input, output));
     }
 

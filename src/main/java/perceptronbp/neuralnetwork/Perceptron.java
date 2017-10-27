@@ -11,7 +11,7 @@ import java.util.ListIterator;
 public class Perceptron {
 
     private List<Layer> layerList;
-    private float meanSquaredError = 0;
+    private float meanSquaredError;
     private float learningCoefficient;
 
     private Perceptron(Builder builder) {
@@ -50,8 +50,6 @@ public class Perceptron {
         float [] dOutputVector;
 
         for (int epoch = 0; epoch < maxEpochs; ++epoch) {
-            meanSquaredError = 0;
-
             // we go input by input
             for (int i = 0; i < trainData.size(); ++i ) {
                 inputVector = trainData.getInput(i); // vector for one input from batch
@@ -80,7 +78,7 @@ public class Perceptron {
 
     // MSE = 1/n * SUM [(d_o - y_o)^2]
     private void calcMSE (float[] dOutputs) {
-
+        meanSquaredError = 0;
         Layer finalLayer = layerList.get(layerList.size() - 1);
         float[] finalOutput = finalLayer.getCurrentOutput();
         for (int i = 0; i < finalOutput.length; ++ i ) {
